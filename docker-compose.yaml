@@ -1,0 +1,40 @@
+services:
+  banco-mysql:
+    image: mysql:8.0
+    networks:
+      - rede-a
+    volumes:
+      - dados-mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: senha
+
+  sistema-ubuntu:
+    image: ubuntu
+    tty: true
+    networks:
+      - rede-a
+    depends_on:
+      - banco-mysql
+
+  banco-redis:
+    image: redis:alpine
+    networks:
+      - rede-b
+    volumes:
+      - dados-redis:/data
+
+  sistema-centos:
+    image: centos:7
+    tty: true
+    networks:
+      - rede-b
+    depends_on:
+      - banco-redis
+
+networks:
+  rede-a:
+  rede-b:
+
+volumes:
+  dados-mysql:
+  dados-redis:
